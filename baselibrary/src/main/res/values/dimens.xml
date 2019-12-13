@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dp_48">48.00dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_44">44dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="sp_17">17sp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_47">47dp</dimen>
+
+    <item name="sp_14_5" type="dimen" format="float">14.5sp</item>
+</resources>

@@ -1,0 +1,98 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        versionCode 1
+        versionName "1.0"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+        kapt {
+            arguments {
+                arg("AROUTER_MODULE_NAME", project.getName())
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.multidex:multidex:2.0.0'
+    //support
+    implementation "androidx.annotation:annotation:1.0.0-beta01"
+    implementation "androidx.legacy:legacy-support-v4:1.0.0-beta01"
+//    implementation(rootProject.ext.dependencies["appcompat-v7"]) {
+//        exclude module: 'support-annotations'
+//        exclude module: 'support-v4'
+//    }
+    implementation "androidx.appcompat:appcompat:1.0.0-beta01"
+    implementation "androidx.cardview:cardview:1.0.0-beta01"
+    implementation "com.google.android.material:material:1.0.0-beta01"
+    implementation "androidx.recyclerview:recyclerview:1.0.0-beta01"
+    //image
+    //Base-adapter-helper needs to use picasso
+    implementation "com.github.bumptech.glide:glide:4.9.0"
+    //bugly
+    //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
+    //  compile rootProject.ext.dependencies["bugly-crashreport"]
+    //compile rootProject.ext.dependencies["bugly-nativecrashreport"]
+    implementation "org.greenrobot:eventbus:3.0.0"
+    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.15"
+    implementation  "com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar"
+
+    //net
+    //   implementation "io.reactivex.rxjava2:rxjava:2.1.0"
+    implementation "com.jakewharton.rxbinding2:rxbinding:2.0.0"
+    implementation "com.squareup.retrofit2:retrofit:${rootProject.ext.version["VRetrofitSdk"]}"
+    implementation "com.squareup.retrofit2:converter-gson:${rootProject.ext.version["VRetrofitSdk"]}"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.3.0"
+    implementation "com.squareup.okhttp3:okhttp:${rootProject.ext.version["VOkhttp"]}"
+    implementation "com.squareup.okhttp3:logging-interceptor:${rootProject.ext.version["VOkhttp"]}"
+    implementation "com.google.code.gson:gson:2.8.2"
+
+    implementation  "de.hdodenhof:circleimageview:3.0.0"
+    //life
+    implementation 'com.alibaba:arouter-api:1.5.0'
+    kapt 'com.alibaba:arouter-compiler:1.2.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    // Optional, if you use support library fragments:
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
+    implementation project(path: ':photopicker')
+    implementation project(path: ':adressselectorlib')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //PushSDK必须依赖基础组件库，所以需要加入对应依赖
+    implementation 'com.umeng.umsdk:analytics:8.0.0'
+    implementation 'com.umeng.umsdk:common:2.0.2'
+
+    //PushSDK必须依赖utdid库，所以需要加入对应依赖
+    implementation 'com.umeng.umsdk:utdid:1.1.5.3'
+
+    //PushSDK
+    implementation 'com.umeng.umsdk:push:6.0.1'
+}
