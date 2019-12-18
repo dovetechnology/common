@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 package com.appbaselib.base;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -161,7 +164,11 @@ public abstract class BaseMvcLazyFragment extends Fragment {
     /**
      * get loading target view
      */
-    protected abstract View getLoadingTargetView();
+    protected View getLoadingTargetView() {
+        return null;
+    }
+
+    ;
 
 
     protected FragmentManager getSupportFragmentManager() {
@@ -225,7 +232,7 @@ public abstract class BaseMvcLazyFragment extends Fragment {
      */
     protected void showToast(String msg) {
         if (null != msg) {
-          showToast(msg);
+            showToast(msg);
         }
     }
 

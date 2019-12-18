@@ -413,7 +413,7 @@ public class TitleBar extends ViewGroup implements View.OnClickListener {
             text.setGravity(Gravity.CENTER);
             text.setText(action.getText());
             text.setPadding(dip2px(10), 0, dip2px(10), 0);
-            text.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.sp_14_5));
+            text.setTextSize(14);
             if (mActionTextColor != 0) {
                 text.setTextColor(mActionTextColor);
             }
