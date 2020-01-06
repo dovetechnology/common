@@ -16,6 +16,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
@@ -101,7 +102,14 @@ public class RxHttpUtil {
                             return Observable.error(new ApiException(tResponseBean.getMessage(), tResponseBean.getCode()));
                         }
                     }
-                }).compose(RxLife.with(context).<ResponseBean<T>>bindToLifecycle()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+                }).compose(RxLife.with(context).<ResponseBean<T>>bindOnDestroy()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                        .doOnDispose(new Action() {
+                            @Override
+                            public void run() throws Exception {
+
+                                Observable.error(new Throwable("取消请求"));
+                            }
+                        });
             }
         };
 

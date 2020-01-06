@@ -28,7 +28,7 @@ class RxLife private constructor(private val lifecycleOwner: LifecycleOwner) : G
 
     init {
         lifecycleOwner.lifecycle.addObserver(this)
-        if (!isInitialized) BaseApplication.mInstance?.let { init(it) }
+        if (!isInitialized) BaseApplication.instance?.let { init(it) }
     }
 
     companion object {

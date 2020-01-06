@@ -12,11 +12,11 @@ import java.io.Serializable
 
 
 /** toast相关 **/
-fun Any.toast(msg: CharSequence) {
-    Toast.makeText(BaseApplication.mInstance, msg, Toast.LENGTH_SHORT).show()
+fun Any.toast(msg: CharSequence?) {
+    Toast.makeText(BaseApplication.instance, msg, Toast.LENGTH_SHORT).show()
 }
 fun Any.longToast(msg: CharSequence) {
-    Toast.makeText(BaseApplication.mInstance, msg, Toast.LENGTH_LONG).show()
+    Toast.makeText(BaseApplication.instance, msg, Toast.LENGTH_LONG).show()
 }
 /** json相关 **/
 fun Any.toJson() = Gson().toJson(this)

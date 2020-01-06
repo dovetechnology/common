@@ -19,25 +19,15 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
 abstract class BaseApplication : MultiDexApplication() {
-    protected var mActivityLifecycle: ActivityLifecycle? = null
 
     override fun onCreate() {
         super.onCreate()
-        mInstance = this
+        instance = this
         AppManager.getInstance().setApplication(this)//给App管理器设置上下文
         /**检测当前进程名称是否为应用包名，否则return （像百度地图等sdk需要在单独的进程中执行，会多次执行Application的onCreate()方法，所以为了只初始化一次应用配置，作此判断） */
         if (CommonUtils.getCurProcessName(this) != packageName) {
             return
         }
-
-        mActivityLifecycle = ActivityLifecycle(this)
-        registerActivityLifecycleCallbacks(mActivityLifecycle)
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
     }
 
     override fun attachBaseContext(base: Context) {
@@ -46,7 +36,7 @@ abstract class BaseApplication : MultiDexApplication() {
     }
 
     companion object {
-
-        var mInstance: BaseApplication? = null
+        lateinit var instance: BaseApplication
     }
+
 }

@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 import com.appbaselib.base.BaseRecyclerViewAdapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.chad.library.adapter.base.listener.OnItemClickListener;
+import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.pangu.appbaselibrary.R;
 
@@ -59,14 +60,14 @@ public class BottomDialogUtils {
      * @param mStrings             list（string类型）
      * @param mOnItemClickListener 点击事件
      */
-    public static BottomSheetDialog showBottomDialog(Context mContext, List<String> mStrings, final BaseQuickAdapter.OnItemClickListener mOnItemClickListener) {
+    public static BottomSheetDialog showBottomDialog(Context mContext, List<String> mStrings, final OnItemClickListener mOnItemClickListener) {
         final BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(mContext);
         RecyclerView mRecyclerView = new RecyclerView(mContext);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         StringAdapter mStringAdapter = new StringAdapter(R.layout.item_list, mStrings);
-        mStringAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mStringAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 mOnItemClickListener.onItemClick(adapter, view, position);
@@ -85,14 +86,14 @@ public class BottomDialogUtils {
      * @param mStrings             list（object类型）
      * @param mOnItemClickListener 点击事件
      */
-    public static BottomSheetDialog showBottomDialog2(Context mContext, List<Item> mStrings, final BaseQuickAdapter.OnItemClickListener mOnItemClickListener) {
+    public static BottomSheetDialog showBottomDialog2(Context mContext, List<Item> mStrings, final OnItemClickListener mOnItemClickListener) {
         final BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(mContext);
         RecyclerView mRecyclerView = new RecyclerView(mContext);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(mContext);
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         ObjectAdapter mStringAdapter = new ObjectAdapter(R.layout.item_list, mStrings);
-        mStringAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mStringAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 mOnItemClickListener.onItemClick(adapter, view, position);
@@ -107,7 +108,7 @@ public class BottomDialogUtils {
     }
 
 
-    public static BottomSheetDialog showBottomDialog(Context mContext, String title, List<String> mStrings, final BaseQuickAdapter.OnItemClickListener mOnItemClickListener) {
+    public static BottomSheetDialog showBottomDialog(Context mContext, String title, List<String> mStrings, final OnItemClickListener mOnItemClickListener) {
         final BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(mContext);
         View mView = LayoutInflater.from(mContext).inflate(R.layout.view_bottom_list_with_title, null);
         RecyclerView mRecyclerView = (RecyclerView) mView.findViewById(R.id.recyclerview);
@@ -120,7 +121,7 @@ public class BottomDialogUtils {
         mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
         StringAdapter mStringAdapter = new StringAdapter(R.layout.item_list, mStrings);
-        mStringAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mStringAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 mOnItemClickListener.onItemClick(adapter, view, position);

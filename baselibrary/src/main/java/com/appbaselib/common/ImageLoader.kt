@@ -21,6 +21,8 @@ import com.pangu.appbaselibrary.R
 
 object ImageLoader {
     fun load(context: Context, path: String, imageView: ImageView) {
+        if (path.isNullOrEmpty())
+            return
         Glide.with(context).load(path)
                 //  .centerCrop()  //
                 .placeholder(R.drawable.defalut_img_bg)

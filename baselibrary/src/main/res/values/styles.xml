@@ -68,7 +68,6 @@
 
     <style name="style_txt_cd0000_16sp">
         <item name="android:textColor">@color/color_cd0000</item>
-        <item name="android:textSize">@dimen/sp_16</item>
     </style>
 
     <style name="style_default_item_line_padding">

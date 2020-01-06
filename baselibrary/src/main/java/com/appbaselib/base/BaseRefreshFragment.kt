@@ -2,16 +2,15 @@ package com.dove.imuguang.base
 
 import android.os.Bundle
 import androidx.annotation.CallSuper
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.appbaselib.base.BaseMvcFragment
+import com.appbaselib.base.BaseRecyclerViewAdapter
 
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
+import com.chad.library.adapter.base.module.LoadMoreModule
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.pangu.appbaselibrary.R
 import com.safframework.ext.postDelayed
 
@@ -79,36 +78,38 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
         mRecyclerview.layoutManager = mLinearLayoutManager
         mSwipeRefreshLayout?.setColorSchemeColors(resources.getColor(R.color.colorAccent))
         mSwipeRefreshLayout?.setOnRefreshListener {
-            if (!isLoadmoreIng)
-                postDelayed(300)
-                {
-                    refreshData(false)
-                }
-            else
-                mSwipeRefreshLayout?.isRefreshing = false
+            if (isLoadmoreIng)
+            {
+                return@setOnRefreshListener
+            }
+            postDelayed(200)
+            {
+                refreshData(false)
+            }
         }
         initAdapter()
         if (mAdapter == null)
             throw NullPointerException("adapter is null")
-        mAdapter!!.emptyView = mView
-
+        mAdapter!!.setEmptyView(mView)
+        if (mAdapter is LoadMoreModule) {
+            setLoadMoreListener()
+        }
     }
 
     fun setLoadMoreListener() {
         isLoadmore = true
-       // mAdapter!!.setEnableLoadMore(false)
-        mAdapter!!.setOnLoadMoreListener({
-            if (!(mSwipeRefreshLayout?.isRefreshing ?: false)) {
-                isLoadmoreIng = true
-                postDelayed(300)
-                {
-                    requestData()
+        mAdapter.loadMoreModule?.isEnableLoadMore = true
+        mAdapter.loadMoreModule?.isAutoLoadMore = true
 
-                }
-            } else {
+        mAdapter.loadMoreModule?.setOnLoadMoreListener {
 
+            isLoadmoreIng = true
+            postDelayed(200)
+            {
+                requestData()
             }
-        }, mRecyclerview)
+
+        }
 
     }
 
@@ -122,6 +123,8 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
     fun refreshData(isShow: Boolean) {
 
         //   mRecyclerview.scrollToPosition(0);
+        mAdapter.loadMoreModule?.isEnableLoadMore = false
+
         isReReresh = true
         pageNo = 1
         if (isShow)
@@ -139,6 +142,8 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
             toggleShowLoading(false)
         }
         mSwipeRefreshLayout?.isRefreshing = false
+        mAdapter.loadMoreModule?.isEnableLoadMore = true
+
 
         if (isFirstReresh) {
             mRecyclerview.adapter = mAdapter  //如果一开始就设置，会导致 先出现  空数据 再加载数据
@@ -151,46 +156,13 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
             pageNo++
             mAdapter.addData(mData)
 
-
             if (isFirstReresh || isReReresh) {
 
                 isFirstReresh = false
                 isReReresh = false
                 //当数据不满一页的时候，取消加载更多
                 if (isLoadmore) {
-
-                    //延时操作，避免 lastitem为 -1
-                    //                mRecyclerview.postDelayed(new Runnable() {
-                    //                    @Override
-                    //                    public void run() {
-                    //                        int lastItem = ((LinearLayoutManager) mRecyclerview.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-                    //                        int all_item = mAdapter.requestData().size() + mAdapter.getHeaderLayoutCount() + mAdapter.getFooterLayoutCount();
-                    //
-                    //                        if (lastItem == all_item - 1)   //表示数据不满一页
-                    //                            mAdapter.setEnableLoadMore(false);
-                    //                        else {
-                    //                            mAdapter.notifyDataSetChanged();
-                    //                            mAdapter.setEnableLoadMore(true);
-                    //                            mAdapter.setOnLoadMoreListener(new BaseQuickAdapter.RequestLoadMoreListener() {
-                    //                                @Override
-                    //                                public void onLoadMoreRequested() {
-                    //
-                    //                                    if (!mSwipeRefreshLayout.isRefreshing()) {
-                    //                                        isLoadmoreIng = true;
-                    //                                        requestData();
-                    //                                    } else {
-                    //
-                    //                                    }
-                    //
-                    //                                }
-                    //                            }, mRecyclerview);
-                    //
-                    //                        }
-                    //
-                    //                    }
-                    //                }, 300);
-
-                    mAdapter!!.disableLoadMoreIfNotFullPage(mRecyclerview)
+                    mAdapter.loadMoreModule?.isEnableLoadMoreIfNotFullPage = true
                 }
             }
 
@@ -202,9 +174,9 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
         if (isLoadmore && isLoadmoreIng) {
             isLoadmoreIng = false
             if (mData == null || mData.size == 0)
-                mAdapter!!.loadMoreEnd()
+                mAdapter.loadMoreModule?.loadMoreEnd()
             else
-                mAdapter!!.loadMoreComplete()
+                mAdapter.loadMoreModule?.loadMoreComplete()
         }
     }
 
@@ -220,12 +192,14 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
         } else {
             toggleShowLoading(false)
             showToast(mes)
+            mAdapter.loadMoreModule?.isEnableLoadMore = true
+
             if (mSwipeRefreshLayout != null)
                 mSwipeRefreshLayout?.isRefreshing = false
 
             if (isLoadmoreIng) {
                 isLoadmoreIng = false
-                mAdapter!!.loadMoreFail()
+                mAdapter.loadMoreModule?.loadMoreFail()
             }
         }
 
