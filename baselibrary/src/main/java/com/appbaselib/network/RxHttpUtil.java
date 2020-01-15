@@ -81,7 +81,7 @@ public class RxHttpUtil {
                         }
                     }
                 }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                        .compose(RxLife.with(context).<T>bindToLifecycle());
+                        .compose(RxLife.with(context).<T>bindOnDestroy());
             }
         };
     }
@@ -102,14 +102,7 @@ public class RxHttpUtil {
                             return Observable.error(new ApiException(tResponseBean.getMessage(), tResponseBean.getCode()));
                         }
                     }
-                }).compose(RxLife.with(context).<ResponseBean<T>>bindOnDestroy()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                        .doOnDispose(new Action() {
-                            @Override
-                            public void run() throws Exception {
-
-                                Observable.error(new Throwable("取消请求"));
-                            }
-                        });
+                }).compose(RxLife.with(context).<ResponseBean<T>>bindOnDestroy()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
             }
         };
 

@@ -102,11 +102,9 @@ public class AppManager {
      * @param activityClass
      */
     public void startActivity2(Class activityClass) {
-        if (getCurrentActivity()!=null)
-        {
-            getCurrentActivity().startActivity(new Intent(getCurrentActivity(),activityClass));
-        }
-        else {
+        if (getCurrentActivity() != null) {
+            getCurrentActivity().startActivity(new Intent(getCurrentActivity(), activityClass));
+        } else {
             startActivity(new Intent(mApplication, activityClass));
         }
     }
@@ -122,14 +120,6 @@ public class AppManager {
         mApplication = null;
     }
 
-    /**
-     * 将在前台的activity保存
-     *
-     * @param currentActivity
-     */
-    public void setCurrentActivity(Activity currentActivity) {
-        this.mCurrentActivity = currentActivity;
-    }
 
     /**
      * 获得当前在前台的activity
@@ -137,7 +127,10 @@ public class AppManager {
      * @return
      */
     public Activity getCurrentActivity() {
-        return mCurrentActivity;
+        if (mActivityList != null)
+            return mActivityList.get(mActivityList.size() - 1);
+        else
+            return null;
     }
 
     /**
