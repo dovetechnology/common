@@ -1,10 +1,14 @@
 package com.appbaselib.network;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
-import com.appbaselib.rxlife.RxLife;
+import com.appbaselib.utils.LogUtils;
+import com.dhh.rxlife2.RxLife;
 
 import androidx.lifecycle.LifecycleOwner;
+
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
@@ -15,9 +19,12 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -96,13 +103,25 @@ public class RxHttpUtil {
                 return upstream.flatMap(new Function<ResponseBean<T>, ObservableSource<ResponseBean<T>>>() {
                     @Override
                     public ObservableSource<ResponseBean<T>> apply(ResponseBean<T> tResponseBean) throws Exception {
-                        if (tResponseBean.getCode() == 0) {
-                            return createData2(tResponseBean);
-                        } else {
-                            return Observable.error(new ApiException(tResponseBean.getMessage(), tResponseBean.getCode()));
+                        try {
+                            if (tResponseBean.getCode() == 0) {
+                                return createData2(tResponseBean);
+                            } else {
+                                return Observable.error(new ApiException(tResponseBean.getMessage(), tResponseBean.getCode()));
+                            }
+                        } catch (Exception e) {
+                            return Observable.error(new ApiException("加载失败", 0));
                         }
+
                     }
                 }).compose(RxLife.with(context).<ResponseBean<T>>bindOnDestroy()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+//                        .doOnDispose(new Action() {
+//                            @Override
+//                            public void run() throws Exception {
+//
+//                                LogUtils.e("---------->取消订阅");
+//                            }
+//                        });
             }
         };
 

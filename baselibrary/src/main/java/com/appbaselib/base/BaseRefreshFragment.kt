@@ -5,6 +5,8 @@ import androidx.annotation.CallSuper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.appbaselib.base.BaseMvcFragment
 import com.appbaselib.base.BaseRecyclerViewAdapter
 
@@ -71,11 +73,8 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
     // tips:要获取 getintent 的数据 ，必须重写 getIntentData方法，在里面去获取
     fun initList() {
 
-        val mView = activity!!.layoutInflater.inflate(R.layout.view_empty, mRecyclerview.parent as ViewGroup, false)
         mList = ArrayList()
-        mLinearLayoutManager = androidx.recyclerview.widget.LinearLayoutManager(mContext)
-        mLinearLayoutManager.orientation = androidx.recyclerview.widget.LinearLayoutManager.VERTICAL
-        mRecyclerview.layoutManager = mLinearLayoutManager
+        mRecyclerview.layoutManager = getLayoutManager()
         mSwipeRefreshLayout?.setColorSchemeColors(resources.getColor(R.color.colorAccent))
         mSwipeRefreshLayout?.setOnRefreshListener {
             if (isLoadmoreIng)
@@ -88,12 +87,20 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
             }
         }
         initAdapter()
-        if (mAdapter == null)
+        if (mAdapter == null) {
             throw NullPointerException("adapter is null")
+        }
+        mRecyclerview.adapter = mAdapter
+        val mView = activity!!.layoutInflater.inflate(R.layout.view_empty, mRecyclerview, false)
         mAdapter!!.setEmptyView(mView)
         if (mAdapter is LoadMoreModule) {
             setLoadMoreListener()
         }
+    }
+
+    open fun getLayoutManager():RecyclerView.LayoutManager{
+
+        return LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false)
     }
 
     fun setLoadMoreListener() {
@@ -144,10 +151,6 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
         mSwipeRefreshLayout?.isRefreshing = false
         mAdapter.loadMoreModule?.isEnableLoadMore = true
 
-
-        if (isFirstReresh) {
-            mRecyclerview.adapter = mAdapter  //如果一开始就设置，会导致 先出现  空数据 再加载数据
-        }
         if (isReReresh) {
             mList.clear()
         }
