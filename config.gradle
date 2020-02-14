@@ -31,7 +31,7 @@ ext {
             "retrofit-converter-gson"      : "com.squareup.retrofit2:converter-gson:${version["VRetrofitSdk"]}",
             "retrofit-converter-jackson"   : "com.squareup.retrofit2:converter-jackson:${version["VRetrofitSdk"]}",
             "retrofit-adapter-rxjava"      : "com.squareup.retrofit2:adapter-rxjava:${version["VRetrofitSdk"]}",
-            "retrofit-adapter-rxjava2"     : "com.squareup.retrofit2:adapter-rxjava2:2.3.0",
+            "retrofit-adapter-rxjava2"     : "com.squareup.retrofit2:adapter-rxjava2:2.5.0",
 
             "okhttp3"                      : "com.squareup.okhttp3:okhttp:${version["VOkhttp"]}",
             "okhttp-urlconnection"         : "com.squareup.okhttp:okhttp-urlconnection:2.0.0",
