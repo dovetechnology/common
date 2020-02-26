@@ -20,6 +20,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import java.io.File
+import androidx.core.content.ContextCompat.getSystemService
+import android.telephony.TelephonyManager
+
 
 /**
  */
@@ -39,7 +42,8 @@ inline val Context.screenHeight
 inline val Context.isNetworkAvailable: Boolean
     @SuppressLint("MissingPermission")
     get() {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo?.isConnectedOrConnecting ?: false
     }
@@ -79,7 +83,10 @@ fun Context.string(@StringRes id: Int): String = getString(id)
 
 fun Context.color(@ColorRes id: Int): Int = resources.getColor(id)
 
-fun Context.inflateLayout(@LayoutRes layoutId: Int, parent: ViewGroup? = null, attachToRoot: Boolean = false): View = LayoutInflater.from(this).inflate(layoutId, parent, attachToRoot)
+fun Context.inflateLayout(
+    @LayoutRes layoutId: Int, parent: ViewGroup? = null,
+    attachToRoot: Boolean = false
+): View = LayoutInflater.from(this).inflate(layoutId, parent, attachToRoot)
 
 /**
  * 获取当前app的版本号
@@ -99,6 +106,11 @@ fun Context.getAppVersion(): String {
     }
 
     return ""
+}
+
+fun Context.getDeviceId(): String {
+    val tm = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+    return tm.deviceId
 }
 
 fun Context.getAppVersionCode(): Int {
@@ -155,8 +167,10 @@ fun Context.installApk(file: File) {
         apkUri = Uri.fromFile(file);
     }
 
-    intent.setDataAndType(apkUri,
-            "application/vnd.android.package-archive");
+    intent.setDataAndType(
+        apkUri,
+        "application/vnd.android.package-archive"
+    );
     startActivity(intent);
 
     //不能写这句话 有些机子要出问题 麻痹的 搞了一天
