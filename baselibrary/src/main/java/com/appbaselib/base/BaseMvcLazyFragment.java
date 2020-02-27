@@ -21,10 +21,13 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.util.DisplayMetrics;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -197,6 +200,14 @@ public abstract class BaseMvcLazyFragment extends Fragment {
             intent.putExtras(bundle);
         }
         startActivity(intent);
+    }
+
+    protected void start(Class<?> clazz, Bundle mbudle,View view,String name) {
+
+        Intent intent = new Intent(mContext, clazz);
+        intent.putExtras(mbudle);
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext, view,name);
+        ActivityCompat.startActivity(mContext, intent, optionsCompat.toBundle());
     }
 
     /**

@@ -95,8 +95,8 @@ fun TextView.strikeThrougthSpan(str: String, range: IntRange){
     text = str.toStrikeThrougthSpan(range)
 }
 
-fun TextView.clickSpan(str: String, range: IntRange, clickListener: View.OnClickListener,
-                       color: Int = Color.RED, isUnderlineText: Boolean = false){
+fun TextView.clickSpan(str: String, range: IntRange,
+                       color: Int = Color.RED, isUnderlineText: Boolean = false, clickListener: View.OnClickListener){
     movementMethod = LinkMovementMethod.getInstance()
     highlightColor = Color.TRANSPARENT  // remove click bg color
     text = str.toClickSpan(range, clickListener, color, isUnderlineText)
