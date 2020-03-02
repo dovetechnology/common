@@ -82,7 +82,7 @@ dependencies {
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
-    implementation project(path: ':photopicker')
+   // implementation project(path: ':photopicker')
     implementation project(path: ':adressselectorlib')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
