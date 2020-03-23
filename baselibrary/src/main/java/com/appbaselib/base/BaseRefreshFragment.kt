@@ -39,10 +39,16 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
     var isLoadmoreIng = false  //是否正在加载更多
 
     //butternife  暂时无法解决
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val mView = super.onCreateView(inflater, container, savedInstanceState)
-        mRecyclerview = mView!!.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerview)
-        mSwipeRefreshLayout = mView.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipe)
+        mRecyclerview =
+            mView!!.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerview)
+        mSwipeRefreshLayout =
+            mView.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipe)
         return mView
     }
 
@@ -77,8 +83,7 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
         mRecyclerview.layoutManager = getLayoutManager()
         mSwipeRefreshLayout?.setColorSchemeColors(resources.getColor(R.color.colorAccent))
         mSwipeRefreshLayout?.setOnRefreshListener {
-            if (isLoadmoreIng)
-            {
+            if (isLoadmoreIng) {
                 return@setOnRefreshListener
             }
             postDelayed(200)
@@ -98,26 +103,22 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
         }
     }
 
-    open fun getLayoutManager():RecyclerView.LayoutManager{
+    open fun getLayoutManager(): RecyclerView.LayoutManager {
 
-        return LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false)
+        return LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
     }
 
     fun setLoadMoreListener() {
         isLoadmore = true
-        mAdapter.loadMoreModule?.isEnableLoadMore = true
         mAdapter.loadMoreModule?.isAutoLoadMore = true
-
+        mAdapter.loadMoreModule?.isEnableLoadMoreIfNotFullPage=false
         mAdapter.loadMoreModule?.setOnLoadMoreListener {
-
             isLoadmoreIng = true
             postDelayed(200)
             {
                 requestData()
             }
-
         }
-
     }
 
 
@@ -130,17 +131,12 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
     fun refreshData(isShow: Boolean) {
 
         //   mRecyclerview.scrollToPosition(0);
-        mAdapter.loadMoreModule?.isEnableLoadMore = false
 
         isReReresh = true
         pageNo = 1
         if (isShow)
             mSwipeRefreshLayout?.isRefreshing = true
         requestData()
-//        if (isLoadmore) {
-//            mAdapter!!.setEnableLoadMore(false)
-//            //重新刷新,重新设置加载更多的逻辑
-//        }
 
     }
 
@@ -149,7 +145,6 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
             toggleShowLoading(false)
         }
         mSwipeRefreshLayout?.isRefreshing = false
-        mAdapter.loadMoreModule?.isEnableLoadMore = true
 
         if (isReReresh) {
             mList.clear()
@@ -158,17 +153,18 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
 
             pageNo++
             mAdapter.addData(mData)
-
             if (isFirstReresh || isReReresh) {
 
                 isFirstReresh = false
                 isReReresh = false
-                //当数据不满一页的时候，取消加载更多
-                if (isLoadmore) {
-                    mAdapter.loadMoreModule?.isEnableLoadMoreIfNotFullPage = true
+                //官方demo里面 setNewData 方法里面会 checkDisableLoadMoreIfNotFullPage 这里没有调用setnewdata 所以手动调用一次
+                if (mData.size<10)
+                {
+                    mAdapter.loadMoreModule?.isEnableLoadMore=false
                 }
-            }
+               // mAdapter.loadMoreModule?.checkDisableLoadMoreIfNotFullPage()
 
+            }
 
         } else {
             mAdapter!!.notifyDataSetChanged()//清空视图
@@ -195,8 +191,6 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
         } else {
             toggleShowLoading(false)
             showToast(mes)
-            mAdapter.loadMoreModule?.isEnableLoadMore = true
-
             if (mSwipeRefreshLayout != null)
                 mSwipeRefreshLayout?.isRefreshing = false
 

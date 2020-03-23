@@ -9,9 +9,11 @@ import org.reactivestreams.Publisher;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.functions.Function;
 
-public class RetryWithDelay implements Function<Flowable<? extends Throwable>, Publisher<?>> {
+public class RetryWithDelay implements Function<Observable<Throwable>, ObservableSource<?>> {
 
     private final int maxRetries;
     private final int retryDelayMillis;
@@ -23,26 +25,24 @@ public class RetryWithDelay implements Function<Flowable<? extends Throwable>, P
         this.retryCount = 0;
     }
 
+
     @Override
-    public Publisher<?> apply(@NonNull Flowable<? extends Throwable> attempts) throws Exception {
+    public ObservableSource<?> apply(Observable<Throwable> throwableObservable) throws Exception {
+        return throwableObservable
+                .flatMap(new Function<Throwable, ObservableSource<?>>() {
 
-        return attempts.flatMap(new Function<Throwable, Publisher<?>>() {
-            @Override
-            public Publisher<?> apply(Throwable throwable) throws Exception {
-                if (++retryCount <= maxRetries) {
-
-                    Log.i("RetryWithDelay", "get error, it will try after " + retryDelayMillis
-                            + " millisecond, retry count " + retryCount);
-                    // When this Observable calls onNext, the original
-                    // Observable will be retried (i.e. re-subscribed).
-                    return Flowable.timer(retryDelayMillis, TimeUnit.MILLISECONDS);
-
-                } else {
-
-                    // Max retries hit. Just pass the error along.
-                    return Flowable.error(throwable);
-                }
-            }
-        });
+                    @Override
+                    public ObservableSource<?> apply(Throwable throwable) throws Exception {
+                        if (retryCount <= maxRetries) {
+                            Log.i("RetryWithDelay", "get error, it will try after " + 200 * retryCount
+                                    + " millisecond, retry count " + retryCount);
+                            // When this Observable calls onNext, the original Observable will be retried (i.e. re-subscribed).
+                            retryCount++;
+                            return Observable.timer(retryDelayMillis * retryCount,
+                                    TimeUnit.MILLISECONDS);
+                        }
+                        return Observable.error(throwable);
+                    }
+                });
     }
 }

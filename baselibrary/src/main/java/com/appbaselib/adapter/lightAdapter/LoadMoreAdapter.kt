@@ -14,15 +14,18 @@ import com.chad.library.adapter.base.entity.MultiItemEntity
 import com.pangu.appbaselibrary.R
 import java.net.CookieHandler
 
-class LightAdapter<T> @JvmOverloads constructor(
+class LoadMoreAdapter<T> @JvmOverloads constructor(
     val items: MutableList<T> = mutableListOf<T>()
-    , var itemClickListener: ((adapter: LightAdapter<T>, view: View, position: Int) -> Unit)? = null
+    , var itemClickListener: ((adapter: LoadMoreAdapter<T>, view: View, position: Int) -> Unit)? = null
 ) :
     RecyclerView.Adapter<BaseViewHolder>() {
 
     private var core =
         mutableMapOf<Int, Pair<Int, (BaseViewHolder) -> Unit>>() //layout. type  ,viewholder
     private var default_type = 0
+    private var MORE_TYPE = 100
+    var isLoadMore = false
+
 
 //    var onItemClickListener: OnItemClickListener? = null
 //    fun setOnClickItemListener(itemClickListener: (adapter: LightAdapter, view: View, position: Int) -> Unit) {
@@ -37,8 +40,10 @@ class LightAdapter<T> @JvmOverloads constructor(
     fun register(
         @LayoutRes layout: Int, type: Int = default_type,
         unit: (baseViewHolder: BaseViewHolder) -> Unit
-    ): LightAdapter<T> {
+    ): LoadMoreAdapter<T> {
+
         core.put(type, Pair(layout, unit))
+
         return this
     }
 
@@ -49,6 +54,9 @@ class LightAdapter<T> @JvmOverloads constructor(
             if (items[position] is MultiItemEntity) //多种type的时候
                 return (items[position] as MultiItemEntity).itemType()
         }
+        if (position >= items.size) {
+            return MORE_TYPE
+        }
         return 0
     }
 
@@ -58,8 +66,11 @@ class LightAdapter<T> @JvmOverloads constructor(
             LayoutInflater.from(parent.context).inflate(core.get(viewType)!!.first, parent, false)
         var holder = BaseViewHolder(itemView)
         itemClickListener?.let {
-            itemView.setOnClickListener {
-                itemClickListener?.invoke(this, itemView, holder.adapterPosition)
+            //防止footer点击事件的问题
+            if (holder.adapterPosition < items.size) {
+                itemView.setOnClickListener {
+                    itemClickListener?.invoke(this, itemView, holder.adapterPosition)
+                }
             }
         }
         return holder
@@ -71,7 +82,7 @@ class LightAdapter<T> @JvmOverloads constructor(
 
     override fun getItemCount(): Int {
 
-        return items.size
+        return if (isLoadMore) items.size + 1 else items.size
     }
 
     fun add(list: MutableList<T>) {
@@ -79,6 +90,57 @@ class LightAdapter<T> @JvmOverloads constructor(
         notifyDataSetChanged()
     }
 
+    //==================loadmore=-============
+    var state = 1; //1 正在加载，2，加载失败,3结束
+
+    fun loadMore(u: () -> Unit): LoadMoreAdapter<T> {
+        isLoadMore = true
+        register(R.layout.quick_view_load_more, MORE_TYPE, {
+            var more = it.getView<LinearLayout>(R.id.load_more_loading_view)
+            var end = it.getView<FrameLayout>(R.id.load_more_load_end_view)
+            var fail = it.getView<FrameLayout>(R.id.load_more_load_fail_view)
+
+            if (state == 2) {
+                more.visibility = View.GONE
+                end.visibility = View.GONE
+                fail.visibility = View.VISIBLE
+                it.itemView.setOnClickListener {
+                    more.visibility = View.VISIBLE
+                    end.visibility = View.GONE
+                    fail.visibility = View.GONE
+                    u()
+                }
+            } else if (state == 3) {
+                more.visibility = View.GONE
+                end.visibility = View.VISIBLE
+                fail.visibility = View.GONE
+            } else if (state == 1) {
+                more.visibility = View.VISIBLE
+                end.visibility = View.GONE
+                fail.visibility = View.GONE
+                u()
+            } else {
+
+            }
+        })
+        return this
+    }
+
+    fun loadMoreEnd() {
+        state = 3
+        notifyItemChanged(itemCount - 1)
+    }
+
+
+    fun loadMoreComplete() {
+        //this.rec
+        state = 1  //加载完毕恢复 正在加载状态
+    }
+
+    fun loadMoreFail() {
+        state = 2
+        notifyItemChanged(itemCount - 1)
+    }
     //===================================我是分界线========================================//
 
     interface MultiItemEntity {

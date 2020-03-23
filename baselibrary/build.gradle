@@ -60,7 +60,7 @@ dependencies {
     //compile rootProject.ext.dependencies["bugly-nativecrashreport"]
     implementation "org.greenrobot:eventbus:3.0.0"
     implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.0-beta6"
-    implementation  "com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar"
+    implementation "com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar"
 
     //net
     //   implementation "io.reactivex.rxjava2:rxjava:2.1.0"
@@ -72,7 +72,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:${rootProject.ext.version["VOkhttp"]}"
     implementation "com.google.code.gson:gson:2.8.2"
 
-    implementation  "de.hdodenhof:circleimageview:3.0.0"
+    implementation "de.hdodenhof:circleimageview:3.0.0"
     //life
     implementation 'com.alibaba:arouter-api:1.5.0'
     kapt 'com.alibaba:arouter-compiler:1.2.2'
@@ -82,7 +82,7 @@ dependencies {
     // Optional, if you use support library fragments:
     debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-beta01'
-   // implementation project(path: ':photopicker')
+    // implementation project(path: ':photopicker')
     implementation project(path: ':adressselectorlib')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

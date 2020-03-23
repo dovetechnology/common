@@ -9,6 +9,8 @@ import com.dhh.rxlife2.RxLife;
 
 import androidx.lifecycle.LifecycleOwner;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
@@ -100,28 +102,23 @@ public class RxHttpUtil {
         return new ObservableTransformer<ResponseBean<T>, ResponseBean<T>>() {
             @Override
             public ObservableSource<ResponseBean<T>> apply(Observable<ResponseBean<T>> upstream) {
-                return upstream.flatMap(new Function<ResponseBean<T>, ObservableSource<ResponseBean<T>>>() {
-                    @Override
-                    public ObservableSource<ResponseBean<T>> apply(ResponseBean<T> tResponseBean) throws Exception {
-                        try {
-                            if (tResponseBean.getCode() == 0) {
-                                return createData2(tResponseBean);
-                            } else {
-                                return Observable.error(new ApiException(tResponseBean.getMessage(), tResponseBean.getCode()));
-                            }
-                        } catch (Exception e) {
-                            return Observable.error(new ApiException("加载失败", 0));
-                        }
+                return upstream
+                        .retryWhen(new RetryWithDelay(2,200))//错误重试
+                        .flatMap(new Function<ResponseBean<T>, ObservableSource<ResponseBean<T>>>() {
+                            @Override
+                            public ObservableSource<ResponseBean<T>> apply(ResponseBean<T> tResponseBean) throws Exception {
+                                try {
+                                    if (tResponseBean.getCode() == 0) {
+                                        return createData2(tResponseBean);
+                                    } else {
+                                        return Observable.error(new ApiException(tResponseBean.getMessage(), tResponseBean.getCode()));
+                                    }
+                                } catch (Exception e) {
+                                    return Observable.error(new ApiException("加载失败", 0));
+                                }
 
-                    }
-                }).compose(RxLife.with(context).<ResponseBean<T>>bindOnDestroy()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
-//                        .doOnDispose(new Action() {
-//                            @Override
-//                            public void run() throws Exception {
-//
-//                                LogUtils.e("---------->取消订阅");
-//                            }
-//                        });
+                            }
+                        }).compose(RxLife.with(context).<ResponseBean<T>>bindOnDestroy()).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
             }
         };
 

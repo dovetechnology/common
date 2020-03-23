@@ -14,13 +14,15 @@ class BaseViewHolder : RecyclerView.ViewHolder {
     constructor(view: View) : super(view) {
     }
 
-    fun getView(@IdRes viewId: Int): View? {
-        var view: View? = views.get(viewId)
+    fun <T : View> getView(@IdRes viewId: Int): T {
+        var view = views.get(viewId)
         if (view == null) {
             view = itemView.findViewById(viewId)
             views.put(viewId, view)
         }
-        return view
+        checkNotNull(view) { "No view found with id $viewId" }
+
+        return view as T
     }
 
     fun setText(viewId: Int, text: String): BaseViewHolder {

@@ -108,10 +108,6 @@ fun Context.getAppVersion(): String {
     return ""
 }
 
-fun Context.getDeviceId(): String {
-    val tm = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-    return tm.deviceId
-}
 
 fun Context.getAppVersionCode(): Int {
 

@@ -133,7 +133,7 @@ abstract class BaseMvcAppCompatActivity : AppCompatActivity() {
      * @param clazz
      * @param bundle
      */
-    protected fun start(clazz: Class<*>, bundle: Bundle?) {
+    public fun start(clazz: Class<*>, bundle: Bundle?) {
         val intent = Intent(this, clazz)
         if (null != bundle) {
             intent.putExtras(bundle)

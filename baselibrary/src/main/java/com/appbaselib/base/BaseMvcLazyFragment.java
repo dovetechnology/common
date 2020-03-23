@@ -32,6 +32,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.appbaselib.utils.ToastUtils;
+
 
 /**
  * 增加Rxlifecycle管理rx，在子类中调用.compose(bindToLifecycle())绑定生命周期
@@ -57,6 +59,7 @@ public abstract class BaseMvcLazyFragment extends Fragment {
     private boolean isFirstVisible = true;
     private boolean isFirstInvisible = true;
     private boolean isPrepared;
+    public boolean isVisibleToMe = false; //viewpager使用
 
 
     @Override
@@ -105,6 +108,7 @@ public abstract class BaseMvcLazyFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        isVisibleToMe = isVisibleToUser;
         if (isVisibleToUser) {
             if (isFirstVisible) {
                 isFirstVisible = false;
@@ -202,11 +206,11 @@ public abstract class BaseMvcLazyFragment extends Fragment {
         startActivity(intent);
     }
 
-    protected void start(Class<?> clazz, Bundle mbudle,View view,String name) {
+    protected void start(Class<?> clazz, Bundle mbudle, View view, String name) {
 
         Intent intent = new Intent(mContext, clazz);
         intent.putExtras(mbudle);
-        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext, view,name);
+        ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) mContext, view, name);
         ActivityCompat.startActivity(mContext, intent, optionsCompat.toBundle());
     }
 
@@ -243,7 +247,7 @@ public abstract class BaseMvcLazyFragment extends Fragment {
      */
     protected void showToast(String msg) {
         if (null != msg) {
-            showToast(msg);
+            ToastUtils.showShort(mContext,msg);
         }
     }
 
