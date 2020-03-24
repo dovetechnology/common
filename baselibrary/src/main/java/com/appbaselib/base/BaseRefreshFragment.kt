@@ -40,15 +40,15 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
 
     //butternife  暂时无法解决
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val mView = super.onCreateView(inflater, container, savedInstanceState)
         mRecyclerview =
-            mView!!.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerview)
+                mView!!.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerview)
         mSwipeRefreshLayout =
-            mView.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipe)
+                mView.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipe)
         return mView
     }
 
@@ -111,7 +111,7 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
     fun setLoadMoreListener() {
         isLoadmore = true
         mAdapter.loadMoreModule?.isAutoLoadMore = true
-        mAdapter.loadMoreModule?.isEnableLoadMoreIfNotFullPage=false
+        mAdapter.loadMoreModule?.isEnableLoadMoreIfNotFullPage = false
         mAdapter.loadMoreModule?.setOnLoadMoreListener {
             isLoadmoreIng = true
             postDelayed(200)
@@ -134,48 +134,49 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
 
         isReReresh = true
         pageNo = 1
-        if (isShow)
+        if (isShow) {
             mSwipeRefreshLayout?.isRefreshing = true
+        }
         requestData()
 
     }
 
     fun loadComplete(mData: List<T>?) {
+
         loadingTargetView?.let {
             toggleShowLoading(false)
         }
         mSwipeRefreshLayout?.isRefreshing = false
-
+//清空
         if (isReReresh) {
             mList.clear()
         }
-        if (mData != null && mData.size != 0) {
 
+        if (mData != null && mData.size != 0) {
             pageNo++
             mAdapter.addData(mData)
             if (isFirstReresh || isReReresh) {
-
                 isFirstReresh = false
                 isReReresh = false
                 //官方demo里面 setNewData 方法里面会 checkDisableLoadMoreIfNotFullPage 这里没有调用setnewdata 所以手动调用一次
-                if (mData.size<10)
-                {
-                    mAdapter.loadMoreModule?.isEnableLoadMore=false
+                if (isLoadmore) {
+                    if (mData.size < 10) {
+                        mAdapter.loadMoreModule?.isEnableLoadMore = false
+                    } else {
+                        setLoadMoreListener()
+                    }
                 }
-               // mAdapter.loadMoreModule?.checkDisableLoadMoreIfNotFullPage()
-
             }
-
-        } else {
-            mAdapter!!.notifyDataSetChanged()//清空视图
         }
 
         if (isLoadmore && isLoadmoreIng) {
             isLoadmoreIng = false
-            if (mData == null || mData.size == 0)
+            if (mData == null || mData.size == 0) {
                 mAdapter.loadMoreModule?.loadMoreEnd()
-            else
+            }
+            else {
                 mAdapter.loadMoreModule?.loadMoreComplete()
+            }
         }
     }
 
