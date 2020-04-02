@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.appbaselib.base.BaseMvcFragment
 import com.appbaselib.base.BaseRecyclerViewAdapter
 
@@ -25,12 +26,11 @@ import java.util.ArrayList
 
 abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
 
-    lateinit var mRecyclerview: androidx.recyclerview.widget.RecyclerView
-    var mSwipeRefreshLayout: androidx.swiperefreshlayout.widget.SwipeRefreshLayout? = null
-
+    lateinit var mRecyclerview: RecyclerView
+    var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     lateinit var mList: MutableList<T>
     lateinit var mAdapter: BaseQuickAdapter<T, BaseViewHolder>
-    lateinit var mLinearLayoutManager: androidx.recyclerview.widget.LinearLayoutManager
+    lateinit var mLinearLayoutManager: LinearLayoutManager
     var isReReresh = false//重新刷新 清楚数据
     var pageNo = 1  //当前页
     var isFirstReresh = true
@@ -38,33 +38,22 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
     var isLoadmore = false //是否开启加载更多
     var isLoadmoreIng = false  //是否正在加载更多
 
-    //butternife  暂时无法解决
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val mView = super.onCreateView(inflater, container, savedInstanceState)
         mRecyclerview =
-                mView!!.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.recyclerview)
+            mView!!.findViewById(R.id.recyclerview)
         mSwipeRefreshLayout =
-                mView.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.swipe)
+            mView.findViewById(R.id.swipe)
         return mView
     }
 
     @CallSuper
     override fun initView() {
         initList()
-        //设置只在viewpager的情况下 开启懒加载
-
-        //        if (isLazyLoad()) {
-        //            if (!(this.getView().getParent() instanceof ViewPager)) {   //懒加载 如果 父控件不是  viewpager （adapter必须是fragmentadapter） 不会调用  setvisiblehint
-        //                initData();
-        //            }
-        //        } else {
-        //            initData();
-        //        }
-
     }
 
     override fun getLoadingTargetView(): View? {
@@ -76,9 +65,7 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
         return R.layout.fragment_recyclerview
     }
 
-    // tips:要获取 getintent 的数据 ，必须重写 getIntentData方法，在里面去获取
     fun initList() {
-
         mList = ArrayList()
         mRecyclerview.layoutManager = getLayoutManager()
         mSwipeRefreshLayout?.setColorSchemeColors(resources.getColor(R.color.colorAccent))
@@ -108,9 +95,12 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
         return LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false)
     }
 
+    fun setEnableLoadMoreFalse() {
+        mAdapter.loadMoreModule?.isEnableLoadMore = false
+    }
+
     fun setLoadMoreListener() {
         isLoadmore = true
-        mAdapter.loadMoreModule?.isAutoLoadMore = true
         mAdapter.loadMoreModule?.isEnableLoadMoreIfNotFullPage = false
         mAdapter.loadMoreModule?.setOnLoadMoreListener {
             isLoadmoreIng = true
@@ -121,16 +111,12 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
         }
     }
 
-
     abstract fun initAdapter()
-
 
     public abstract override fun requestData()
 
     //重新刷新数据
     fun refreshData(isShow: Boolean) {
-
-        //   mRecyclerview.scrollToPosition(0);
 
         isReReresh = true
         pageNo = 1
@@ -147,7 +133,7 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
             toggleShowLoading(false)
         }
         mSwipeRefreshLayout?.isRefreshing = false
-//清空
+        //清空
         if (isReReresh) {
             mList.clear()
         }
@@ -173,8 +159,7 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
             isLoadmoreIng = false
             if (mData == null || mData.size == 0) {
                 mAdapter.loadMoreModule?.loadMoreEnd()
-            }
-            else {
+            } else {
                 mAdapter.loadMoreModule?.loadMoreComplete()
             }
         }
