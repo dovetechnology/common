@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.appbaselib.base.BaseMvcFragment
 import com.appbaselib.base.BaseRecyclerViewAdapter
+import com.appbaselib.ext.toast
 
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.module.LoadMoreModule
@@ -30,7 +31,6 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
     lateinit var mList: MutableList<T>
     lateinit var mAdapter: BaseQuickAdapter<T, BaseViewHolder>
-    lateinit var mLinearLayoutManager: LinearLayoutManager
     var isReReresh = false//重新刷新 清楚数据
     var pageNo = 1  //当前页
     var isFirstReresh = true
@@ -39,15 +39,15 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
     var isLoadmoreIng = false  //是否正在加载更多
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         val mView = super.onCreateView(inflater, container, savedInstanceState)
         mRecyclerview =
-            mView!!.findViewById(R.id.recyclerview)
+                mView!!.findViewById(R.id.recyclerview)
         mSwipeRefreshLayout =
-            mView.findViewById(R.id.swipe)
+                mView.findViewById(R.id.swipe)
         return mView
     }
 
@@ -176,7 +176,7 @@ abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
             }
         } else {
             toggleShowLoading(false)
-            showToast(mes)
+            toast(mes)
             if (mSwipeRefreshLayout != null)
                 mSwipeRefreshLayout?.isRefreshing = false
 
