@@ -127,10 +127,11 @@ public class AppManager {
      * @return
      */
     public Activity getCurrentActivity() {
-        if (mActivityList != null)
+        if (mActivityList != null) {
             return mActivityList.get(mActivityList.size() - 1);
-        else
+        } else {
             return null;
+        }
     }
 
     /**
