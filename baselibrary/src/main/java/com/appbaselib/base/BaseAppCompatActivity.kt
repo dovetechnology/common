@@ -185,55 +185,6 @@ abstract class BaseAppCompatActivity : AppCompatActivity() {
      */
     protected abstract fun toggleOverridePendingTransition(): Boolean
 
-    /**
-     * startActivity
-     *
-     * @param clazz
-     */
-    protected fun start(clazz: Class<*>) {
-        val intent = Intent(this, clazz)
-        startActivity(intent)
-    }
-
-    /**
-     * startActivity with bundle
-     *
-     * @param clazz
-     * @param bundle
-     */
-    protected fun start(clazz: Class<*>, bundle: Bundle?) {
-        val intent = Intent(this, clazz)
-        if (null != bundle) {
-            intent.putExtras(bundle)
-        }
-        startActivity(intent)
-    }
-
-    /**
-     * startActivity then finish
-     *
-     * @param clazz
-     */
-    protected fun startThenKill(clazz: Class<*>) {
-        val intent = Intent(this, clazz)
-        startActivity(intent)
-        finish()
-    }
-
-    /**
-     * startActivity with bundle then finish
-     *
-     * @param clazz
-     * @param bundle
-     */
-    protected fun startThenKill(clazz: Class<*>, bundle: Bundle?) {
-        val intent = Intent(this, clazz)
-        if (null != bundle) {
-            intent.putExtras(bundle)
-        }
-        startActivity(intent)
-        finish()
-    }
 
     /**
      * startActivityForResult
@@ -261,52 +212,4 @@ abstract class BaseAppCompatActivity : AppCompatActivity() {
         startActivityForResult(intent, requestCode)
     }
 
-    /**
-     * show toast
-     *
-     * @param msg  material design   snackbar
-     */
-    //    protected void showSnackbar(String msg) {
-    //        //防止遮盖虚拟按键
-    //        if (null != msg && !CommonUtils.isEmpty(msg)) {
-    //            Snackbar.make(getLoadingTargetView(), msg, Snackbar.LENGTH_SHORT).show();
-    //        }
-    //    }
-
-    /**
-     * show toast
-     *
-     * @param msg
-     */
-    protected fun showToast(msg: String?) {
-        if (null != msg && !TextUtils.isEmpty(msg)) {
-            ToastUtils.showShort(mContext, msg)
-        }
-    }
-
-    protected fun showLongToast(msg: String?) {
-        if (null != msg && !TextUtils.isEmpty(msg)) {
-            ToastUtils.showLong(mContext, msg)
-        }
-    }
-
-    /**
-     * set status bar translucency
-     *
-     * @param on
-     */
-    @Deprecated("")
-    protected fun setTranslucentStatus(on: Boolean) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            val win = window
-            val winParams = win.attributes
-            val bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-            if (on) {
-                winParams.flags = winParams.flags or bits
-            } else {
-                winParams.flags = winParams.flags and bits.inv()
-            }
-            win.attributes = winParams
-        }
-    }
 }

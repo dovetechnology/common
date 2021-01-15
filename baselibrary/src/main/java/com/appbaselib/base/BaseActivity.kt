@@ -27,9 +27,7 @@ abstract class BaseActivity : BaseAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //   DisplayUtils.setCustomDensity(this, BaseApplication.mInstance);//适配
         ARouter.getInstance().inject(this)
-
         if (registerEventBus()) {
             EventBus.getDefault().register(this)    //alter  by  tangming  加入eventbus
         }
@@ -75,7 +73,6 @@ abstract class BaseActivity : BaseAppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-
         if (registerEventBus()) {
             EventBus.getDefault().unregister(this)   //alter  tm   17 5/26
         }
@@ -91,7 +88,6 @@ abstract class BaseActivity : BaseAppCompatActivity() {
     protected fun registerEventBus(): Boolean {
         return false
     }
-
 
     //===============================================我是分隔符================================================
 

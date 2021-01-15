@@ -12,7 +12,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import java.util.ArrayList
 
 /**
- * Created by tangming on 2016/11/28.   加入单选 多选 / 2017 5/7 xiugai  默认实现加载更多
+ * Created by tangming on 2016/11/28.   加入单选 多选 / 2017 5/7   默认实现加载更多
  */
 
 abstract class BaseRecyclerViewAdapter<T>(layoutResId: Int, data: MutableList<T>) : BaseQuickAdapter<T, BaseViewHolder>(layoutResId, data), LoadMoreModule {

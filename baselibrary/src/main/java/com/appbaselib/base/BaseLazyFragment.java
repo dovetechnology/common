@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.appbaselib.utils.ToastUtils;
 
 import androidx.annotation.Nullable;
@@ -41,15 +42,6 @@ import androidx.fragment.app.FragmentManager;
  */
 public abstract class BaseLazyFragment extends Fragment {
 
-
-
-    /**
-     * Screen information
-     */
-    protected int mScreenWidth = 0;
-    protected int mScreenHeight = 0;
-    protected float mScreenDensity = 0.0f;
-
     /**
      * context
      */
@@ -61,15 +53,9 @@ public abstract class BaseLazyFragment extends Fragment {
 
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mContext = activity;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     @Override
@@ -84,14 +70,6 @@ public abstract class BaseLazyFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
-        mScreenDensity = displayMetrics.density;
-        mScreenHeight = displayMetrics.heightPixels;
-        mScreenWidth = displayMetrics.widthPixels;
-
         initView();
     }
 
@@ -224,17 +202,5 @@ public abstract class BaseLazyFragment extends Fragment {
         }
         startActivityForResult(intent, requestCode);
     }
-
-    /**
-     * show toast
-     *
-     * @param msg
-     */
-    protected void showToast(String msg) {
-        if (null != msg) {
-            ToastUtils.showToast(mContext, msg, Toast.LENGTH_SHORT);
-        }
-    }
-
 
 }

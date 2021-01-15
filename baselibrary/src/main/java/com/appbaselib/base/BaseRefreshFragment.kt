@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.appbaselib.base.BaseMvcFragment
-import com.appbaselib.base.BaseRecyclerViewAdapter
+import com.appbaselib.base.BaseFragment
 import com.appbaselib.ext.toast
-
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.module.LoadMoreModule
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -25,7 +23,7 @@ import java.util.ArrayList
  * Created by tangming on 2016/12/14.
  */
 
-abstract class BaseRefreshFragment<T> : BaseMvcFragment() {
+abstract class BaseRefreshFragment<T> : BaseFragment() {
 
     lateinit var mRecyclerview: RecyclerView
     var mSwipeRefreshLayout: SwipeRefreshLayout? = null
