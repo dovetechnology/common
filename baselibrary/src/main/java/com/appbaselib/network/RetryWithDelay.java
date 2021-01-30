@@ -1,14 +1,7 @@
 package com.appbaselib.network;
 
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import org.reactivestreams.Publisher;
-
 import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.functions.Function;

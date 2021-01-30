@@ -8,13 +8,6 @@ import android.widget.FrameLayout;
 
 import com.pangu.appbaselibrary.R;
 
-/**
- * ===============================
- * 描    述：封面图
- * 作    者：pjw
- * 创建日期：2019/3/25 14:42
- * ===============================
- */
 public class RatioFramlayout extends FrameLayout {
 
     /**
